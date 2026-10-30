@@ -10,7 +10,10 @@ const SEVERITY_PENALTY = { info: 3, warning: 12, critical: 30 } as const;
 export function scoreFindings(findings: readonly Finding[]): HealthScore {
   const breakdown = { info: 0, warning: 0, critical: 0 };
   let penalty = 0;
-  for (const f of findings) {
+  const ordered = [...findings].sort(
+    (a, b) => a.id.localeCompare(b.id) || a.weight - b.weight || a.severity.localeCompare(b.severity),
+  );
+  for (const f of ordered) {
     breakdown[f.severity] += 1;
     const scale = 0.5 + f.weight / 100;
     penalty += SEVERITY_PENALTY[f.severity] * scale;
