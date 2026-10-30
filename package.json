@@ -1,0 +1,23 @@
+{
+  "name": "necrokit",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A reusable evidence-first maintenance-analysis skeleton for two applications.",
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm --filter @necrokit/package-graveyard dev",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.21",
+    "fast-check": "4.1.1",
+    "typescript": "5.8.3",
+    "vitest": "3.1.3"
+  }
+}

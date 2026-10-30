@@ -1,0 +1,12 @@
+{
+  "name": "core-validation",
+  "description": "Validate shared contracts when core files change.",
+  "trigger": {
+    "type": "fileSaved",
+    "patterns": ["packages/necrokit-core/**/*.ts"]
+  },
+  "action": {
+    "type": "runCommand",
+    "command": "pnpm --filter @necrokit/core typecheck && pnpm --filter @necrokit/core test"
+  }
+}
