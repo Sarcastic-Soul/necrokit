@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NecroKit: Package Graveyard and Repo Reaper</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0d0d10; --fg:#e8e6e3; --muted:#9a9aa3; --accent:#ff7a1a; --ok:#6ee7a0; --warn:#ffd166; --crit:#ff5c5c; }
+    * { box-sizing: border-box; }
+    body { margin:0; font: 16px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+    header, main { max-width: 960px; margin: 0 auto; padding: 24px; }
+    h1 { font-size: 2rem; margin: 0 0 4px; }
+    .tag { color: var(--muted); margin: 0 0 24px; }
+    nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+    button { background:#1c1c22; color:var(--fg); border:1px solid #33333d; padding:10px 14px; border-radius:8px; cursor:pointer; font: inherit; }
+    button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+    button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    section { background:#15151b; border:1px solid #26262e; border-radius:12px; padding:20px; margin-bottom:16px; }
+    .score { font-size: 3rem; font-weight: 700; margin: 0; }
+    .band-healthy { color: var(--ok); } .band-at-risk { color: var(--warn); } .band-critical { color: var(--crit); }
+    ul { padding-left: 20px; }
+    li { margin: 6px 0; }
+    .sev-critical { color: var(--crit); font-weight: 600; }
+    .sev-warning { color: var(--warn); font-weight: 600; }
+    .sev-info { color: var(--muted); font-weight: 600; }
+    pre { white-space: pre-wrap; background:#0a0a0d; padding:14px; border-radius:8px; overflow:auto; }
+    .note { color: var(--muted); font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NecroKit</h1>
+    <p class="tag">One reusable maintenance-analysis core. Two apps. Fixture data, no API keys.</p>
+  </header>
+  <main>
+    <nav aria-label="Application">
+      <button id="tab-pkg" aria-pressed="true" data-app="pkg">Package Graveyard</button>
+      <button id="tab-repo" aria-pressed="false" data-app="repo">Repo Reaper</button>
+    </nav>
+    <div id="app" aria-live="polite"></div>
+    <p class="note">Data is synthetic. Scores are deterministic rules over recorded evidence, not AI judgement. Source: github.com/Sarcastic-Soul/necrokit</p>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
