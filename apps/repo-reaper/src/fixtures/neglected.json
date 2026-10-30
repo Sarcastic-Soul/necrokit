@@ -1,0 +1,11 @@
+{
+  "fullName": "acme/neglected-tool",
+  "archived": false,
+  "pushedAt": "2024-11-02T10:00:00Z",
+  "latestReleaseAt": "2024-03-10T08:00:00Z",
+  "openIssues": { "count": 38, "staleCount": 21 },
+  "openPullRequests": { "count": 5, "oldestDays": 240 },
+  "ciStatus": "failing",
+  "license": "MIT",
+  "hasReadme": true
+}

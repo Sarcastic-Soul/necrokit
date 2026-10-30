@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",
-    "dev": "node --version",
+    "dev": "node --experimental-strip-types --import ./src/register.mjs src/cli.ts src/fixtures/abandoned.json",
     "lint": "tsc --noEmit",
+    "scan": "node --experimental-strip-types --import ./src/register.mjs src/cli.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@necrokit/core": "workspace:*"
+    "@necrokit/core": "workspace:*",
+    "zod": "3.24.4"
   }
 }

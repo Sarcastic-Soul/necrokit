@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`package graveyard scan > matches the markdown snapshot for the abandoned fixture 1`] = `
+"# abandoned-glob-shim
+
+Kind: npm-package
+Score: 2/100 (critical)
+
+## Findings
+- [critical] Package is deprecated: The registry marks this package as deprecated.
+- [info] Low weekly downloads: The package sees about 412 weekly downloads, so few eyes review it.
+- [critical] Source repository is archived: The source repository is archived, so upstream fixes are unlikely.
+- [info] Single maintainer: Only one maintainer is listed, so a single absence can stall the project.
+- [warning] No release in two or more years: Last publish was 1480 days ago and the last commit was 1420 days ago.
+
+## Unavailable evidence
+- None
+
+## Revival plan
+1. Replace the package with the successor named in its deprecation notice.
+2. Fork the repository you depend on, or migrate to a package with active upstream.
+3. Confirm the project still has an active maintainer, or plan a move to a maintained alternative.
+4. Note the bus factor and watch for an identified backup maintainer.
+5. Check whether the package has a broader community or a larger alternative.
+"
+`;

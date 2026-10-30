@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`markdown snapshot > matches the neglected fixture report 1`] = `
+"# acme/neglected-tool
+
+Kind: repository
+Score: 68/100 (at-risk)
+
+## Findings
+- [warning] CI is failing: The latest CI status is failing.
+- [info] No recent release: The latest release is 964 days old (threshold 365).
+- [warning] Pull requests left open too long: The oldest open pull request is 240 days old (threshold 180).
+- [warning] Many stale open issues: 21 open issues are stale (threshold 10).
+
+## Unavailable evidence
+- None
+
+## Revival plan
+1. Fix the failing CI pipeline before merging anything new.
+2. Merge, rebase, or close the oldest open pull requests.
+3. Triage stale issues: close, relabel, or schedule them.
+4. Cut a release, or state that the project is intentionally unversioned.
+"
+`;

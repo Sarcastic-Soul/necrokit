@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",
-    "dev": "node --version",
+    "dev": "node --import ./src/register.mjs src/cli.ts src/fixtures/neglected.json",
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@necrokit/core": "workspace:*"
+    "@necrokit/core": "workspace:*",
+    "zod": "3.24.4"
   }
 }

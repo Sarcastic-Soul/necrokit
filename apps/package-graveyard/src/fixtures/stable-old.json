@@ -1,0 +1,20 @@
+{
+  "name": "stable-old-parser",
+  "version": "3.2.1",
+  "dependencies": {
+    "tokenize-lite": "^1.4.0",
+    "semver-lite": "~2.0.3"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0"
+  },
+  "snapshot": {
+    "daysSinceLastPublish": 900,
+    "daysSinceLastCommit": 30,
+    "deprecated": false,
+    "repositoryArchived": false,
+    "maintainerCount": 2,
+    "weeklyDownloads": 180000,
+    "observedAt": "2026-10-01T00:00:00.000Z"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "fullName": "acme/retired-parser",
+  "archived": true,
+  "pushedAt": "2023-06-01T00:00:00Z",
+  "latestReleaseAt": "2021-05-01T00:00:00Z",
+  "openIssues": { "count": 0, "staleCount": 0 },
+  "openPullRequests": { "count": 0, "oldestDays": 0 },
+  "ciStatus": "unknown",
+  "license": null,
+  "hasReadme": true
+}

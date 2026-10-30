@@ -1,0 +1,11 @@
+{
+  "fullName": "acme/active-lib",
+  "archived": false,
+  "pushedAt": "2026-10-20T09:00:00Z",
+  "latestReleaseAt": "2026-09-01T12:00:00Z",
+  "openIssues": { "count": 4, "staleCount": 2 },
+  "openPullRequests": { "count": 2, "oldestDays": 12 },
+  "ciStatus": "passing",
+  "license": "MIT",
+  "hasReadme": true
+}
