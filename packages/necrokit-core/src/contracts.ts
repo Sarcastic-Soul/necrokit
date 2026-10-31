@@ -43,6 +43,14 @@ export const HealthScoreSchema = z.object({
 });
 export type HealthScore = z.infer<typeof HealthScoreSchema>;
 
+/** Used when no evidence could be collected: no number is invented. */
+export const UnscoredSchema = z.object({
+  score: z.null(),
+  band: z.literal("unknown"),
+  breakdown: HealthScoreSchema.shape.breakdown,
+});
+export type Unscored = z.infer<typeof UnscoredSchema>;
+
 export const RevivalStepSchema = z.object({
   priority: z.number().int().min(1),
   findingId: z.string().min(1),
@@ -62,7 +70,7 @@ export const ReportSchema = z.object({
   evidence: z.array(EvidenceSchema),
   unavailable: z.array(UnavailableSchema),
   findings: z.array(FindingSchema),
-  score: HealthScoreSchema,
+  score: z.union([HealthScoreSchema, UnscoredSchema]),
   plan: RevivalPlanSchema,
 });
 export type Report = z.infer<typeof ReportSchema>;

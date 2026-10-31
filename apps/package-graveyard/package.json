@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",
-    "dev": "node --experimental-strip-types --import ./src/register.mjs src/cli.ts src/fixtures/abandoned.json",
+    "dev": "node --experimental-strip-types --no-warnings --import ./src/register.mjs src/cli.ts src/fixtures/abandoned.json",
     "lint": "tsc --noEmit",
-    "scan": "node --experimental-strip-types --import ./src/register.mjs src/cli.ts",
+    "scan": "node --experimental-strip-types --no-warnings --import ./src/register.mjs src/cli.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

@@ -2,39 +2,207 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NecroKit: score a package for dead dependencies</title>
+  <title>NecroKit</title>
+  <meta name="description" content="Find out which npm packages and GitHub repositories are quietly dying, with evidence for every finding and a plan to revive them." />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    :root { color-scheme: dark; --bg:#0d0d10; --fg:#e8e6e3; --muted:#9a9aa3; --accent:#ff7a1a; --ok:#6ee7a0; --warn:#ffd166; --crit:#ff5c5c; }
+    :root {
+      color-scheme: dark;
+      --bg: #16130f;
+      --surface: #1d1914;
+      --paper: #221d17;
+      --line: #3a3229;
+      --line-soft: #2b251e;
+      --ink: #ede5d6;
+      --muted: #a99d8a;
+      --accent: #e3a33f;
+      --accent-ink: #1a1408;
+      --crit: #e2735c;
+      --ok: #95c08c;
+      --serif: "Instrument Serif", Georgia, serif;
+      --sans: "IBM Plex Sans", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
     * { box-sizing: border-box; }
-    body { margin:0; font: 16px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
-    main { max-width: 960px; margin: 0 auto; padding: 24px; }
-    h1 { font-size: 2rem; margin: 0 0 4px; }
-    .tag { color: var(--muted); margin: 0 0 20px; }
-    textarea { width:100%; min-height: 260px; background:#0a0a0d; color:var(--fg); border:1px solid #33333d; border-radius:8px; padding:12px; font: 14px/1.4 ui-monospace, monospace; }
-    button { margin-top:10px; background:var(--accent); color:#0d0d10; border:0; padding:10px 16px; border-radius:8px; font: inherit; font-weight:600; cursor:pointer; }
-    button:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-    #out { margin-top: 24px; background:#15151b; border:1px solid #26262e; border-radius:12px; padding:20px; }
-    #out:empty { display:none; }
-    .score { font-size: 2.6rem; font-weight: 700; margin: 0; }
-    .score span { font-size: 1rem; color: var(--muted); font-weight: 400; }
-    .band-healthy { color: var(--ok); } .band-at-risk { color: var(--warn); } .band-critical { color: var(--crit); }
-    .sev-critical { color: var(--crit); } .sev-warning { color: var(--warn); } .sev-info { color: var(--muted); }
-    li { margin: 6px 0; }
-    .note { color: var(--muted); font-size: .9rem; margin-top: 20px; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--sans); }
+    a { color: inherit; }
+    .icon { width: 1.1em; height: 1.1em; flex: none; vertical-align: -0.18em; }
+    .muted { color: var(--muted); }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* Masthead: a register title, not a hero */
+    .mast { border-bottom: 1px solid var(--line); }
+    .mast .wrap { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; padding-top: 40px; padding-bottom: 20px; }
+    .brand { display: flex; align-items: baseline; gap: 14px; margin: 0; font: 400 clamp(3rem, 7vw, 5.5rem)/0.9 var(--serif); letter-spacing: -0.01em; }
+    .brand .icon { width: 0.62em; height: 0.62em; color: var(--accent); vertical-align: 0; align-self: center; }
+    .brand em { color: var(--muted); font-size: 0.42em; letter-spacing: 0; }
+    .mast-note { max-width: 32ch; margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .mast-note a { color: var(--ink); }
+
+    /* App switcher: two distinct applications, one core */
+    nav.apps { display: flex; gap: 4px; margin-top: 28px; }
+    nav.apps a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; text-decoration: none; border: 1px solid var(--line); border-bottom: 0; border-radius: 6px 6px 0 0; color: var(--muted); background: transparent; font-weight: 500; }
+    nav.apps a[aria-current="true"] { color: var(--ink); background: var(--surface); border-color: var(--line); position: relative; }
+    nav.apps a[aria-current="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--surface); }
+    nav.apps a:hover { color: var(--ink); }
+
+    .desk { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .desk .wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; padding-top: 32px; padding-bottom: 40px; }
+    .intake { position: sticky; top: 24px; align-self: start; }
+    .intake h2 { margin: 0 0 8px; font: 400 2.1rem/1.1 var(--serif); }
+    #lede { margin: 0 0 24px; color: var(--muted); max-width: 46ch; }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+    .field { display: flex; gap: 8px; }
+    input[type="text"] { flex: 1; min-width: 0; min-height: 48px; padding: 0 14px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; font: 500 1rem var(--mono); }
+    input[type="text"]::placeholder { color: #6f6556; }
+    button { font: inherit; cursor: pointer; }
+    .primary { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 6px; font-weight: 600; transition: background-color 150ms ease-out; }
+    .primary:hover { background: #efb252; }
+    .primary:disabled { opacity: 0.6; cursor: progress; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    #examples { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; }
+    .examples-label { width: 100%; font-size: 0.78rem; color: var(--muted); margin-top: 6px; }
+    .chip { min-height: 36px; padding: 0 12px; background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 4px; font: 0.88rem var(--mono); transition: border-color 150ms ease-out; }
+    .chip:hover { border-color: var(--accent); }
+    .chip-fixture { border-style: dashed; }
+    .skeleton-note { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line-soft); font-size: 0.9rem; color: var(--muted); }
+    .skeleton-note code { font-family: var(--mono); color: var(--ink); font-size: 0.85em; }
+
+    /* The report reads like a coroner's certificate */
+    #report:focus { outline: none; }
+    .cert { background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 28px 28px 20px; box-shadow: 0 1px 0 var(--line-soft); }
+    .cert-head { display: grid; grid-template-columns: 1fr auto; gap: 20px; padding-bottom: 18px; border-bottom: 1px double var(--line); border-bottom-width: 3px; }
+    .cert-kicker { margin: 0 0 4px; font: 500 0.8rem var(--mono); color: var(--muted); }
+    .cert h2 { margin: 0; font: 400 clamp(1.8rem, 3.6vw, 2.6rem)/1.05 var(--serif); overflow-wrap: anywhere; }
+    .cert-head .muted { margin: 6px 0 0; font-size: 0.85rem; }
+    .verdict { text-align: right; }
+    .score { display: block; font: 400 4.2rem/0.9 var(--serif); font-variant-numeric: tabular-nums; }
+    .score small { font-size: 0.32em; color: var(--muted); margin-left: 2px; }
+    .stamp { display: inline-block; margin-top: 10px; padding: 3px 10px; border: 2px solid currentColor; border-radius: 3px; font: 600 0.78rem var(--mono); text-transform: uppercase; letter-spacing: 0.12em; transform: rotate(-4deg); }
+    .band-healthy { color: var(--ok); }
+    .band-at-risk { color: var(--accent); }
+    .band-critical { color: var(--crit); }
+    .band-unknown { color: var(--muted); }
+    .verdict .score { color: var(--ink); }
+
+    .pipeline { display: flex; flex-wrap: wrap; gap: 0; margin: 0; padding: 12px 0; list-style: none; border-bottom: 1px solid var(--line-soft); font-size: 0.82rem; color: var(--muted); }
+    .pipeline li { padding: 2px 12px 2px 0; margin-right: 12px; border-right: 1px solid var(--line-soft); }
+    .pipeline li:last-child { border-right: 0; }
+    .pipeline b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    .block { padding: 18px 0 6px; }
+    .block h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font: 400 1.45rem var(--serif); }
+    .findings { list-style: none; margin: 0; padding: 0; }
+    .finding { display: grid; grid-template-columns: 84px 1fr; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line-soft); }
+    .finding:first-child { border-top: 0; }
+    .finding h4 { margin: 0; font-size: 1rem; font-weight: 600; }
+    .finding p { margin: 2px 0 8px; color: var(--muted); }
+    .finding-none { display: block; }
+    .sev { align-self: start; padding-top: 2px; font: 600 0.72rem var(--mono); text-transform: uppercase; letter-spacing: 0.08em; }
+    .sev-critical .sev { color: var(--crit); }
+    .sev-warning .sev { color: var(--accent); }
+    .sev-info .sev { color: var(--muted); }
+    .evs { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ev { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 3px 8px; border: 1px solid var(--line); border-radius: 3px; font: 0.78rem var(--mono); text-decoration: none; color: var(--ink); background: var(--bg); }
+    .ev .ev-label { color: var(--muted); }
+    .ev .ev-value { overflow-wrap: anywhere; }
+    a.ev:hover { border-color: var(--accent); }
+    .ev .icon { width: 0.9em; height: 0.9em; color: var(--muted); }
+    .block-unavailable ul { margin: 0; padding-left: 18px; }
+    .block-unavailable li { margin: 4px 0; }
+    .block-unavailable b { font: 500 0.85rem var(--mono); margin-right: 6px; }
+    .block-unavailable h3 { color: var(--accent); }
+    .hint { font-size: 0.85rem; color: var(--muted); }
+    .plan { margin: 0; padding-left: 22px; }
+    .plan li { padding: 4px 0; }
+    .plan li::marker { font-family: var(--mono); color: var(--accent); }
+    .cert-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+    .ghost { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 4px; font-size: 0.9rem; }
+    .ghost:hover { border-color: var(--accent); }
+    .loading { padding: 40px 0; color: var(--muted); display: flex; gap: 10px; align-items: center; }
+    .loading .icon { animation: sway 1.4s ease-in-out infinite; color: var(--accent); }
+    @keyframes sway { 50% { transform: translateX(4px); } }
+
+    .colophon .wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; padding-top: 40px; padding-bottom: 56px; font-size: 0.92rem; color: var(--muted); }
+    .colophon h3 { margin: 0 0 8px; color: var(--ink); font: 400 1.35rem var(--serif); }
+    .colophon p { margin: 0; }
+    .colophon code { font-family: var(--mono); font-size: 0.85em; color: var(--ink); }
+
+    @media (max-width: 860px) {
+      .desk .wrap { grid-template-columns: 1fr; gap: 28px; }
+      .intake { position: static; }
+      .mast .wrap { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .wrap { padding: 0 16px; }
+      .field { flex-direction: column; }
+      .cert { padding: 20px 16px 16px; }
+      .cert-head { grid-template-columns: 1fr; }
+      .verdict { text-align: left; display: flex; align-items: center; gap: 16px; }
+      .stamp { margin-top: 0; }
+      .finding { grid-template-columns: 1fr; gap: 4px; }
+      nav.apps a { flex: 1; justify-content: center; padding: 10px 8px; font-size: 0.92rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+      .stamp { transform: none; }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <h1>NecroKit · Package Graveyard</h1>
-    <p class="tag">Paste a package snapshot. Get an evidence-backed health score and a revival plan. Runs in your browser with no API keys.</p>
-    <label for="manifest">Package snapshot (JSON)</label>
-    <textarea id="manifest" spellcheck="false" aria-describedby="hint"></textarea>
-    <p id="hint" class="note">The snapshot needs name, version, and a snapshot object with daysSinceLastPublish, deprecated, repositoryArchived, maintainerCount, and weeklyDownloads. Malformed input is reported, not guessed.</p>
-    <button id="run" type="button">Score this snapshot</button>
-    <div id="out" aria-live="polite"></div>
+  <header class="mast">
+    <div class="wrap">
+      <div>
+        <h1 class="brand"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M92,104a28,28,0,1,0,28,28A28,28,0,0,0,92,104Zm0,40a12,12,0,1,1,12-12A12,12,0,0,1,92,144Zm72-40a28,28,0,1,0,28,28A28,28,0,0,0,164,104Zm0,40a12,12,0,1,1,12-12A12,12,0,0,1,164,144ZM128,16C70.65,16,24,60.86,24,116c0,34.1,18.27,66,48,84.28V216a16,16,0,0,0,16,16h80a16,16,0,0,0,16-16V200.28C213.73,182,232,150.1,232,116,232,60.86,185.35,16,128,16Zm44.12,172.69a8,8,0,0,0-4.12,7V216H152V192a8,8,0,0,0-16,0v24H120V192a8,8,0,0,0-16,0v24H88V195.69a8,8,0,0,0-4.12-7C56.81,173.69,40,145.84,40,116c0-46.32,39.48-84,88-84s88,37.68,88,84C216,145.83,199.19,173.69,172.12,188.69Z"/></svg>NecroKit <em>maintenance autopsies</em></h1>
+        <nav class="apps" aria-label="Applications">
+          <a href="#/packages" data-app="packages" aria-current="true">Package Graveyard</a>
+          <a href="#/repos" data-app="repos" aria-current="false">Repo Reaper</a>
+        </nav>
+      </div>
+      <p class="mast-note">Two apps on one shared core. Every finding cites the evidence it came from. Nothing is guessed. <a href="https://github.com/Sarcastic-Soul/necrokit">Source</a></p>
+    </div>
+  </header>
+
+  <main class="desk">
+    <div class="wrap">
+      <section class="intake" aria-labelledby="intake-title">
+        <h2 id="intake-title">Examine a subject</h2>
+        <p id="lede"></p>
+        <form id="scan-form" novalidate>
+          <label for="subject" id="subject-label">npm package name</label>
+          <div class="field">
+            <input type="text" id="subject" name="q" autocomplete="off" autocapitalize="off" spellcheck="false" />
+            <button type="submit" class="primary" id="scan-btn">Examine</button>
+          </div>
+        </form>
+        <div id="examples"></div>
+        <p class="skeleton-note">Live scans call the public npm registry and GitHub API straight from your browser. No keys, no server. GitHub allows about 60 unauthenticated requests an hour, so if you hit the limit the report says so and the recorded cases still work offline.</p>
+      </section>
+      <section id="report" tabindex="-1" aria-live="polite" aria-label="Report"></section>
+    </div>
   </main>
+
+  <footer class="colophon">
+    <div class="wrap">
+      <div>
+        <h3>One skeleton</h3>
+        <p><code>@necrokit/core</code> owns the evidence contract, rule runner, bounded 0 to 100 score, revival plan, and Markdown/JSON reports. It has no idea what npm or GitHub is.</p>
+      </div>
+      <div>
+        <h3>Two bodies</h3>
+        <p>Package Graveyard and Repo Reaper each add only an adapter and a rule set. Same pipeline: source, evidence, rules, score, plan.</p>
+      </div>
+      <div>
+        <h3>Built with Kiro</h3>
+        <p>Specs, steering, and hooks live in the repo's <code>.kiro</code> folder. Property-based tests guard the scoring rules.</p>
+      </div>
+    </div>
+  </footer>
   <script type="module" src="./app.bundle.js"></script>
 </body>
 </html>

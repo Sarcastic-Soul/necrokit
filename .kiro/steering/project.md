@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # NecroKit project steering
 
 - Build two distinct applications from one stable shared core.

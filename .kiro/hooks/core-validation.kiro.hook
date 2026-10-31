@@ -1,12 +1,14 @@
 {
-  "name": "core-validation",
-  "description": "Validate shared contracts when core files change.",
-  "trigger": {
-    "type": "fileSaved",
-    "patterns": ["packages/necrokit-core/**/*.ts"]
+  "enabled": true,
+  "name": "Core contract guard",
+  "description": "When a shared core file changes, run the core typecheck and tests and check that both apps still build on the same contracts.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["packages/necrokit-core/src/**/*.ts"]
   },
-  "action": {
-    "type": "runCommand",
-    "command": "pnpm --filter @necrokit/core typecheck && pnpm --filter @necrokit/core test"
+  "then": {
+    "type": "askAgent",
+    "prompt": "A file in packages/necrokit-core changed. Run `pnpm --filter @necrokit/core typecheck` and `pnpm --filter @necrokit/core test`, then `pnpm -r typecheck` so Package Graveyard and Repo Reaper are checked against the new contracts. If a contract in contracts.ts changed shape, list every adapter or rule in apps/ that must change. Do not weaken or delete tests to make them pass. Keep package-specific or repository-specific logic out of the core."
   }
 }

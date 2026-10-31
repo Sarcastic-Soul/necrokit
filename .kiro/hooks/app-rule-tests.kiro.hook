@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "App rule tests",
+  "description": "When an app's rules, adapter, or live collector changes, run that app's tests and refresh nothing silently.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["apps/*/src/rules.ts", "apps/*/src/adapter.ts", "apps/*/src/live.ts"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "An app rule, adapter, or live collector changed. Run `pnpm --filter <that app> test`. If a snapshot changed, show the diff and explain which rule or evidence caused it before updating the snapshot. Every finding must still cite at least one evidence id, and any source that failed must appear in `unavailable` with a reason."
+  }
+}

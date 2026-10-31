@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",
-    "dev": "node --import ./src/register.mjs src/cli.ts src/fixtures/neglected.json",
+    "dev": "node --experimental-strip-types --no-warnings --import ./src/register.mjs src/cli.ts src/fixtures/neglected.json",
     "lint": "tsc --noEmit",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "scan": "node --experimental-strip-types --no-warnings --import ./src/register.mjs src/cli.ts"
   },
   "dependencies": {
     "@necrokit/core": "workspace:*",

@@ -5,3 +5,4 @@ export * from "./rules.js";
 export * from "./scoring.js";
 export * from "./plan.js";
 export * from "./report.js";
+export * from "./http.js";

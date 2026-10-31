@@ -45,9 +45,13 @@ export const packageRules: Rule[] = [
     weight: 90,
     evaluate(ev) {
       if (!flag(ev, "deprecated")) return null;
+      const notice = findEvidence(ev, "deprecation-notice")?.value;
       return {
-        evidenceIds: ids(ev, ["deprecated"]),
-        explanation: "The registry marks this package as deprecated.",
+        evidenceIds: ids(ev, ["deprecated", "deprecation-notice"]),
+        explanation:
+          typeof notice === "string"
+            ? `The registry marks this package as deprecated: "${notice}"`
+            : "The registry marks this package as deprecated.",
       };
     },
     suggestedAction: "Replace the package with the successor named in its deprecation notice.",
