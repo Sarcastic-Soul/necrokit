@@ -2,7 +2,7 @@
 
 **One shared skeleton. Two apps that find what is quietly dying in software.**
 
-NecroKit is a Kiroween 2026 Skeleton Crew entry. A small TypeScript core collects evidence, runs named rules, scores health, and writes a revival plan. Two different apps sit on top of it:
+NecroKit is a small TypeScript core that collects evidence, runs named rules, scores health, and writes a revival plan. Two different apps sit on top of it:
 
 - **Package Graveyard** checks an npm package.
 - **Repo Reaper** checks a public GitHub repository.
@@ -110,7 +110,7 @@ necrokit/
 ## How Kiro was used
 
 - **Specs** (`.kiro/specs/`): one spec per part (core, Package Graveyard, Repo Reaper), each with requirements in EARS style, a design, and a task list. The core spec was written first so both apps had to fit the same contract.
-- **Steering** (`.kiro/steering/`): `project.md` holds the rules every change must follow (evidence for every finding, timeouts on every call, no secrets on the judging path, no weakening tests). `tech.md` fixes the stack.
+- **Steering** (`.kiro/steering/`): `project.md` holds the rules every change must follow (evidence for every finding, timeouts on every call, no secrets needed to try it, no weakening tests). `tech.md` fixes the stack.
 - **Hooks** (`.kiro/hooks/`): editing a core file asks the agent to typecheck and test the core and both apps; editing an app's rules or collector asks it to run that app's tests and explain any snapshot change.
 - **Property-based testing**: fast-check checks the scoring rules in `packages/necrokit-core/tests/scoring.property.test.ts`.
 

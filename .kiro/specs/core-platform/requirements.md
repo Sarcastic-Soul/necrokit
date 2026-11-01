@@ -42,4 +42,4 @@ The core is the shared skeleton behind Package Graveyard and Repo Reaper. It tur
 
 1. All live calls SHALL go through `fetchJson`, which SHALL time out (8 seconds by default) and SHALL never throw.
 2. WHEN a response is HTTP 429, or HTTP 403 with `x-ratelimit-remaining: 0`, THEN the reason SHALL say a rate limit was hit and when it resets.
-3. The judging path SHALL work with recorded fixtures, no network, and no secrets.
+3. The demo SHALL work with recorded fixtures, no network, and no secrets.
