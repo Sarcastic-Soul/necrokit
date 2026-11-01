@@ -4,6 +4,7 @@ const DAY_MS = 86_400_000;
 const STALE_ISSUE_THRESHOLD = 10;
 const OLD_PULL_REQUEST_DAYS = 180;
 const STALE_RELEASE_DAYS = 365;
+const STALE_PUSH_DAYS = 365;
 
 /** Rules read only evidence. The reference date arrives as the "generatedAt" evidence item. */
 export const repoRules: Rule[] = [
@@ -72,6 +73,25 @@ export const repoRules: Rule[] = [
       return { evidenceIds: [e.id], explanation: "No license is declared, so reuse rights are unclear." };
     },
     suggestedAction: "Add a LICENSE file that matches the intended reuse terms.",
+  },
+  {
+    id: "no-recent-push",
+    title: "No push in over a year",
+    severity: "warning",
+    weight: 50,
+    evaluate(evidence) {
+      // pushedAt covers a push to any branch, so this only fires when the whole repository is quiet.
+      const pushed = findEvidence(evidence, "pushedAt");
+      const reference = findEvidence(evidence, "generatedAt");
+      if (typeof pushed?.value !== "string" || typeof reference?.value !== "string") return null;
+      const ageDays = Math.floor((Date.parse(reference.value) - Date.parse(pushed.value)) / DAY_MS);
+      if (!Number.isFinite(ageDays) || ageDays <= STALE_PUSH_DAYS) return null;
+      return {
+        evidenceIds: [pushed.id, reference.id],
+        explanation: `The last push to any branch was ${ageDays} days ago (threshold ${STALE_PUSH_DAYS}).`,
+      };
+    },
+    suggestedAction: "Confirm someone still maintains the repository, or plan a move to a maintained fork.",
   },
   {
     id: "no-recent-release",

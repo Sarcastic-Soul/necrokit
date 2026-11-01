@@ -7,7 +7,7 @@ NecroKit is a Kiroween 2026 Skeleton Crew entry. A small TypeScript core collect
 - **Package Graveyard** checks an npm package.
 - **Repo Reaper** checks a public GitHub repository.
 
-Live demo: https://necrokit-demo.vercel.app (after the next deploy, see "Deploy" below)
+Live demo: https://necrokit-demo.vercel.app
 
 ## Try it
 
@@ -47,6 +47,7 @@ Sources: six GitHub REST calls per scan, only one of them a search call.
 | `ci-failing` | warning | the last completed CI run on the default branch failed |
 | `stale-issues` | warning | 10 or more open issues not updated in 180 days |
 | `old-pull-requests` | warning | the oldest open pull request is 180 days old or more |
+| `no-recent-push` | warning | no push to any branch in more than a year |
 | `no-recent-release` | info | no release, or none in the last year |
 | `no-readme` | info | no README |
 

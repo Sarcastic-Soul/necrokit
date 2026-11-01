@@ -21,7 +21,7 @@ Repo Reaper checks whether a public GitHub repository is still cared for. It is 
 
 ## Requirement 3: Rules
 
-1. `archived` (critical), `no-license` (critical), `ci-failing` (warning), `stale-issues` (warning, 10 or more), `old-pull-requests` (warning, oldest 180 days or more), `no-recent-release` (info, none or older than 365 days), `no-readme` (info).
+1. `archived` (critical), `no-license` (critical), `ci-failing` (warning), `stale-issues` (warning, 10 or more), `old-pull-requests` (warning, oldest 180 days or more), `no-recent-push` (warning, no push to any branch in more than 365 days), `no-recent-release` (info, none or older than 365 days), `no-readme` (info).
 
 ## Requirement 4: Output
 
